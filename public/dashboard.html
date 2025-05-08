@@ -1,0 +1,49 @@
+<!-- public/dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Google Drive File Manager</title>
+  <script defer>
+    // Fetch and display file list
+    async function fetchFiles() {
+      const response = await fetch('/api/files');
+      const data = await response.json();
+      
+      const filesList = document.getElementById('filesList');
+      filesList.innerHTML = ''; // Clear old list
+
+      data.files.forEach(file => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${file.name}</strong> (ID: ${file.id})<br>
+          <button onclick="requestOwnership('${file.id}')">Request Ownership</button>
+        `;
+        filesList.appendChild(li);
+      });
+    }
+
+    // Request ownership transfer
+    async function requestOwnership(fileId) {
+      const newOwnerEmail = prompt('Enter new owner email:');
+      if (!newOwnerEmail) return;
+
+      const response = await fetch(`/api/files/${fileId}/transfer-ownership`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newOwnerEmail })
+      });
+
+      const result = await response.json();
+      alert(result.message || 'Ownership transfer attempted.');
+    }
+
+    // Load files on page load
+    window.onload = fetchFiles;
+  </script>
+</head>
+<body>
+  <h1>📂 Google Drive File Manager</h1>
+  <ul id="filesList"></ul>
+</body>
+</html>
