@@ -1,8 +1,3 @@
-Got it — you want **clear, clean setup instructions** so that someone else can install and run your app locally (with the required `.env` config).
-Here’s a **ready-to-use** guide you can copy-paste into your `README.md` or project docs:
-
----
-
 # 🚀 Local Setup Guide
 
 Follow these steps to install and run the project locally.
