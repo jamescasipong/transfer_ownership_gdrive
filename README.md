@@ -56,11 +56,22 @@ If you haven't already set up Google OAuth credentials:
   ```
   http://localhost:3000/oauth2callback
   ```
+## 1️⃣ **End Points**
+
+**Auth Routes:**
+
+* `GET /auth/google`: Initiates the Google OAuth authentication flow.
+* `GET /oauth2callback`: Handles the Google OAuth callback after authentication.
+* `GET /api/auth/status`: Checks if the user is authenticated.
+* `GET /logout`: Logs out the user by clearing the session.
+
+**Drive Routes:**
+
+* `GET /api/files`: Fetches a list of files from Google Drive (requires authentication).
+* `GET /api/files/:fileId`: Fetches details of a specific file from Google Drive (requires authentication).
+* `POST /api/files/:fileId/transfer-ownership`: Transfers the ownership of a file to a different user (requires authentication).
 
 ---
 
-That’s it — you're ready! 🚀
+Would you like help with anything else related to the setup or the functionality of these endpoints?
 
----
-
-Would you like me to also write a **`.env.example`** file for the repo? (Highly recommended for clarity)
