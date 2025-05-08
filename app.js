@@ -5,7 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import routes from './src/routes/index.js';
 import appConfig from './src/config/appConfig.js';
-import authController from './controllers/authController.js';
+import authController from './src/controllers/authController.js';
 
 // Create Express app
 const app = express();

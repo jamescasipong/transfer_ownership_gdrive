@@ -1,65 +1,49 @@
+<!-- public/dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Google Drive Files & Transfer Ownership</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    th { background-color: #f2f2f2; }
-    button { padding: 5px 10px; }
-  </style>
-</head>
-<body>
-  <h1>My Google Drive Files</h1>
-
-  <table>
-    <thead>
-      <tr>
-        <th>File Name</th>
-        <th>File ID</th>
-        <th>Request Ownership Transfer</th>
-      </tr>
-    </thead>
-    <tbody id="fileTableBody"></tbody>
-  </table>
-
-  <script>
-    // Fetch files from backend
+  <title>Google Drive File Manager</title>
+  <script defer>
+    // Fetch and display file list
     async function fetchFiles() {
-      const res = await fetch('/files'); // Assumes backend GET /files returns [{id, name}]
-      const files = await res.json();
-      const tableBody = document.getElementById('fileTableBody');
+      const response = await fetch('/api/files');
+      const data = await response.json();
+      
+      const filesList = document.getElementById('filesList');
+      filesList.innerHTML = ''; // Clear old list
 
-      files.forEach(file => {
-        const row = document.createElement('tr');
-
-        row.innerHTML = `
-          <td>${file.name}</td>
-          <td>${file.id}</td>
-          <td><button onclick="requestOwnership('${file.id}')">Request Transfer</button></td>
+      data.files.forEach(file => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${file.name}</strong> (ID: ${file.id})<br>
+          <button onclick="requestOwnership('${file.id}')">Request Ownership</button>
         `;
-        tableBody.appendChild(row);
+        filesList.appendChild(li);
       });
     }
 
-    // Call backend to change ownership
+    // Request ownership transfer
     async function requestOwnership(fileId) {
-      const newOwnerEmail = prompt('Enter new owner’s email address:');
+      const newOwnerEmail = prompt('Enter new owner email:');
       if (!newOwnerEmail) return;
 
-      const res = await fetch('/changeOwner', {
+      const response = await fetch(`/api/files/${fileId}/transfer-ownership`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fileId, newOwnerEmail })
+        body: JSON.stringify({ newOwnerEmail })
       });
 
-      const result = await res.json();
-      alert(result.message);
+      const result = await response.json();
+      alert(result.message || 'Ownership transfer attempted.');
     }
 
-    fetchFiles();
+    // Load files on page load
+    window.onload = fetchFiles;
   </script>
+</head>
+<body>
+  <h1>📂 Google Drive File Manager</h1>
+  <ul id="filesList"></ul>
 </body>
 </html>
